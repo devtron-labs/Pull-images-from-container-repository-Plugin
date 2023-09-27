@@ -58,7 +58,7 @@ func main() {
 }
 
 func parseTime(timeString string) (time.Time, error) {
-	t, err := time.Parse(time.RFC3339, timeString)
+	t, err := time.Parse("2006-01-02 15:04:05 -0700 MST", timeString)
 	if err != nil {
 		return time.Time{}, err
 	}
