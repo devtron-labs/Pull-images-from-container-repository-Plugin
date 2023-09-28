@@ -18,12 +18,13 @@ import (
 )
 
 type DockerConfiguration struct {
-	AccessKey       string `env:"ACCESS_KEY"`
-	SecretKey       string `env:"SECRET_KEY"`
-	EndPointUrl     string `env:"DOCKER_REGISTRY_URL"`
-	AwsRegion       string `env:"AWS_REGION"`
-	LastFetchedTime string `env:"LAST_FETCHED_TIME"`
-	Repositories    string `env:"REPOSITORY"`
+	AccessKey        string `env:"ACCESS_KEY"`
+	SecretKey        string `env:"SECRET_KEY"`
+	EndPointUrl      string `env:"DOCKER_REGISTRY_URL"`
+	AwsRegion        string `env:"AWS_REGION"`
+	LastFetchedTime  string `env:"LAST_FETCHED_TIME"`
+	Repositories     string `env:"REPOSITORY"`
+	DockerRepository string `env:"DOCKER_REPOSITORY"`
 }
 
 func GetDockerConfiguration() (*DockerConfiguration, error) {
@@ -47,8 +48,16 @@ func main() {
 		fmt.Println("error in parsing last fetched time, using time zero in golang", err)
 	}
 	repo := strings.Split(dockerConfiguration.Repositories, ",")
-	for _, value := range repo {
-		err = GetResultsAndSaveInFile(dockerConfiguration.AccessKey, dockerConfiguration.SecretKey, dockerConfiguration.EndPointUrl, dockerConfiguration.AwsRegion, value, lastFetchedTime)
+	if len(repo) > 0 {
+		for _, value := range repo {
+			err = GetResultsAndSaveInFile(dockerConfiguration.AccessKey, dockerConfiguration.SecretKey, dockerConfiguration.EndPointUrl, dockerConfiguration.AwsRegion, value, lastFetchedTime)
+			if err != nil {
+				fmt.Println("error in  getting results and saving", "err", err.Error())
+				panic("error in  getting results and saving")
+			}
+		}
+	} else {
+		err = GetResultsAndSaveInFile(dockerConfiguration.AccessKey, dockerConfiguration.SecretKey, dockerConfiguration.EndPointUrl, dockerConfiguration.AwsRegion, dockerConfiguration.DockerRepository, lastFetchedTime)
 		if err != nil {
 			fmt.Println("error in  getting results and saving", "err", err.Error())
 			panic("error in  getting results and saving")
