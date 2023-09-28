@@ -48,7 +48,7 @@ func main() {
 		fmt.Println("error in parsing last fetched time, using time zero in golang", err)
 	}
 	repo := strings.Split(dockerConfiguration.Repositories, ",")
-	if len(repo) > 0 {
+	if dockerConfiguration.Repositories != "" {
 		for _, value := range repo {
 			err = GetResultsAndSaveInFile(dockerConfiguration.AccessKey, dockerConfiguration.SecretKey, dockerConfiguration.EndPointUrl, dockerConfiguration.AwsRegion, value, lastFetchedTime)
 			if err != nil {
