@@ -57,7 +57,7 @@ func main() {
 			}
 		}
 	} else {
-		fmt.Println("getting new images for repository", dockerConfiguration.DockerRepository)
+		fmt.Println("getting new images for repository", "repoName", dockerConfiguration.DockerRepository)
 		err = GetResultsAndSaveInFile(dockerConfiguration.AccessKey, dockerConfiguration.SecretKey, dockerConfiguration.EndPointUrl, dockerConfiguration.AwsRegion, dockerConfiguration.DockerRepository, lastFetchedTime)
 		if err != nil {
 			fmt.Println("error in  getting results and saving", "err", err.Error())
