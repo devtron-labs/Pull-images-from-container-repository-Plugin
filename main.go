@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/ecr"
@@ -165,15 +166,27 @@ func GetResultsAndSaveInFile(accessKey, secretKey, dockerRegistryURL, awsRegion,
 // GetAwsClientFromCred creates service client for ecr operations
 func GetAwsClientFromCred(ecrBaseConfig *AwsBaseConfig) (*ecr.Client, error) {
 	var provider credentials.StaticCredentialsProvider
+	var cfg aws.Config
+	var err error
 	if len(ecrBaseConfig.AccessKey) != 0 && len(ecrBaseConfig.Passkey) != 0 {
 		provider = credentials.NewStaticCredentialsProvider(ecrBaseConfig.AccessKey, ecrBaseConfig.Passkey, "")
+		cfg, err = config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(provider))
+		if err != nil {
+			fmt.Println("error in loading default config from aws ecr credentials", "err", err)
+			return nil, err
+		}
+	} else {
+		cfg, err = config.LoadDefaultConfig(context.Background())
+		if err != nil {
+			fmt.Println("error in loading default config from aws ecr credentials", "err", err)
+			return nil, err
+		}
 	}
-
-	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(provider))
-	if err != nil {
-		fmt.Println("error in loading default config from aws ecr credentials", "err", err)
-		return nil, err
-	}
+	//cfg, err := config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(provider))
+	//if err != nil {
+	//	fmt.Println("error in loading default config from aws ecr credentials", "err", err)
+	//	return nil, err
+	//}
 	cfg.Region = ecrBaseConfig.Region
 	// Create ECR client from Config
 	svcClient := ecr.NewFromConfig(cfg)
