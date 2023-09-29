@@ -164,7 +164,12 @@ func GetResultsAndSaveInFile(accessKey, secretKey, dockerRegistryURL, awsRegion,
 
 // GetAwsClientFromCred creates service client for ecr operations
 func GetAwsClientFromCred(ecrBaseConfig *AwsBaseConfig) (*ecr.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(ecrBaseConfig.AccessKey, ecrBaseConfig.Passkey, "")))
+	var provider credentials.StaticCredentialsProvider
+	if len(ecrBaseConfig.AccessKey) != 0 && len(ecrBaseConfig.Passkey) != 0 {
+		provider = credentials.NewStaticCredentialsProvider(ecrBaseConfig.AccessKey, ecrBaseConfig.Passkey, "")
+	}
+
+	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(provider))
 	if err != nil {
 		fmt.Println("error in loading default config from aws ecr credentials", "err", err)
 		return nil, err
