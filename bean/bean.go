@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	PermissionMode = 0644
+	PermissionMode = 0777
 	FileName       = "/output/results.json"
 )
 
