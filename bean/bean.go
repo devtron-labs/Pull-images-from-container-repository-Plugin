@@ -3,7 +3,6 @@ package bean
 import (
 	"errors"
 	"fmt"
-	"github.com/Shivam-nagar23/polling-plugin/bean"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -33,7 +32,7 @@ func CheckFileExists(filename string) (bool, error) {
 	}
 }
 func WriteToFile(file string, fileName string) error {
-	fileExist, err := CheckFileExists(bean.FileName)
+	fileExist, err := CheckFileExists(FileName)
 	if err != nil {
 		fmt.Println("error in checking file exist or not", "err", err.Error())
 		return err
