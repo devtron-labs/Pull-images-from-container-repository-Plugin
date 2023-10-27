@@ -3,6 +3,7 @@ package bean
 import (
 	"errors"
 	"fmt"
+	"github.com/Shivam-nagar23/polling-plugin/bean"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -10,7 +11,7 @@ import (
 
 const (
 	PermissionMode = 0644
-	FileName       = "/tmp/results.json"
+	FileName       = "/output/results.json"
 )
 
 func ExtractOutRegistryId(hostUrl string) string {
@@ -32,7 +33,17 @@ func CheckFileExists(filename string) (bool, error) {
 	}
 }
 func WriteToFile(file string, fileName string) error {
-	err := ioutil.WriteFile(fileName, []byte(file), PermissionMode)
+	fileExist, err := CheckFileExists(bean.FileName)
+	if err != nil {
+		fmt.Println("error in checking file exist or not", "err", err.Error())
+		return err
+	}
+	if !fileExist {
+		if err2 := os.Mkdir("/output", os.ModePerm); err2 != nil {
+			return err2
+		}
+	}
+	err = ioutil.WriteFile(fileName, []byte(file), PermissionMode)
 	fmt.Println("fileName", fileName)
 	fmt.Println("Permission Mode", PermissionMode)
 	if err != nil {
