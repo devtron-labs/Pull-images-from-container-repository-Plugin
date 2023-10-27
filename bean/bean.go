@@ -33,6 +33,8 @@ func CheckFileExists(filename string) (bool, error) {
 }
 func WriteToFile(file string, fileName string) error {
 	err := ioutil.WriteFile(fileName, []byte(file), PermissionMode)
+	fmt.Println("fileName", fileName)
+	fmt.Println("Permission Mode", PermissionMode)
 	if err != nil {
 		fmt.Println("error in writing results to json file", "err", err)
 		return err

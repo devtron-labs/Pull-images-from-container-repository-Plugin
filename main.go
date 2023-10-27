@@ -62,6 +62,7 @@ func main() {
 		err = GetResultsAndSaveInFile(dockerConfiguration.AccessKey, dockerConfiguration.SecretKey, dockerConfiguration.EndPointUrl, dockerConfiguration.AwsRegion, dockerConfiguration.DockerRepository, lastFetchedTime)
 		if err != nil {
 			fmt.Println("error in  getting results and saving", "err", err.Error())
+			time.Sleep(5 * time.Minute)
 			panic("error in  getting results and saving")
 		}
 	}
@@ -116,6 +117,8 @@ func GetResultsAndSaveInFile(accessKey, secretKey, dockerRegistryURL, awsRegion,
 	}
 
 	fileExist, err := bean.CheckFileExists(bean.FileName)
+	fmt.Println("fileExists", fileExist)
+	fmt.Println("err", err)
 	if err != nil {
 		fmt.Println("error in checking file exist or not", "err", err.Error())
 		return err
@@ -126,7 +129,9 @@ func GetResultsAndSaveInFile(accessKey, secretKey, dockerRegistryURL, awsRegion,
 			fmt.Println("error in reading file", "err", err.Error())
 			return err
 		}
+		fmt.Println("err", err.Error())
 		updatedFile := string(file)
+		fmt.Println("updatedFile", updatedFile)
 		for _, val := range filteredImages {
 			updatedFile, err = sjson.Set(updatedFile, "imageDetails.-1", val)
 			if err != nil {
@@ -135,7 +140,9 @@ func GetResultsAndSaveInFile(accessKey, secretKey, dockerRegistryURL, awsRegion,
 
 			}
 		}
+		fmt.Println("updated file 2", updatedFile)
 		err = bean.WriteToFile(updatedFile, bean.FileName)
+		fmt.Println("error when writing file", err)
 		if err != nil {
 			fmt.Println("error in writing file", "err", err.Error())
 			return err
@@ -152,6 +159,7 @@ func GetResultsAndSaveInFile(accessKey, secretKey, dockerRegistryURL, awsRegion,
 			fmt.Println("error in marshalling intend results", "err", err)
 			return err
 		}
+		fmt.Println("file 9", string(file))
 		err = bean.WriteToFile(string(file), bean.FileName)
 		if err != nil {
 			fmt.Println("error in writing file", "err", err.Error())
