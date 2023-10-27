@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	PermissionMode = 0777
-	FileName       = "/output/results.json"
+	PermissionMode = 0644
+	FileName       = "/results.json"
 )
 
 func ExtractOutRegistryId(hostUrl string) string {
